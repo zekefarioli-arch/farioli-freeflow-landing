@@ -5,9 +5,7 @@ const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selec
 // Footer year
 function setYear() {
   const yearEl = $("#year");
-  if (yearEl) {
-    yearEl.textContent = String(new Date().getFullYear());
-  }
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 }
 
 // Theme handling
@@ -17,8 +15,7 @@ function getInitialTheme() {
   const stored = localStorage.getItem(THEME_KEY);
   if (stored === "light" || stored === "dark") return stored;
 
-  return window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: light)").matches
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
     ? "light"
     : "dark";
 }
@@ -40,6 +37,14 @@ function initTheme() {
   });
 }
 
+// Sticky header height -> CSS variable
+function setHeaderHeightVar() {
+  const header = $(".header");
+  const h = header ? Math.ceil(header.getBoundingClientRect().height) : 72;
+  document.documentElement.style.setProperty("--header-h", `${h}px`);
+  return h;
+}
+
 // Mobile navigation
 function initNav() {
   const toggle = $(".nav-toggle");
@@ -56,9 +61,7 @@ function initNav() {
     toggle.setAttribute("aria-expanded", String(open));
   });
 
-  $$("#nav-menu a").forEach(link => {
-    link.addEventListener("click", closeMenu);
-  });
+  $$("#nav-menu a").forEach(link => link.addEventListener("click", closeMenu));
 
   document.addEventListener("click", (e) => {
     if (!(e.target instanceof HTMLElement)) return;
@@ -67,38 +70,90 @@ function initNav() {
   });
 }
 
-// Active section highlighting
+
+// Decide if a section should be vertically centered or top-aligned
+function initViewportSections() {
+  const header = $(".header");
+  const sections = $$("section.vh-section");
+  if (!sections.length) return;
+
+  const refresh = () => {
+    const headerH = setHeaderHeightVar();
+    const available = Math.max(200, window.innerHeight - headerH);
+
+    sections.forEach(sec => {
+      const contentHeight = sec.scrollHeight; // includes padding
+      if (contentHeight > available) sec.classList.add("tall");
+      else sec.classList.remove("tall");
+    });
+  };
+
+  refresh();
+
+  window.addEventListener("resize", refresh);
+
+  if (header) {
+    // If fonts load / zoom changes, etc.
+    const ro = new ResizeObserver(() => refresh());
+    ro.observe(header);
+  }
+}
+
+// Active section highlighting (supports Home + fixes “top shows About”)
 function initActiveLinks() {
-  const links = $$("#nav-menu a").filter(a => a.getAttribute("href")?.startsWith("#"));
+  const links = $$("#nav-menu a").filter(a => (a.getAttribute("href") || "").startsWith("#"));
+  if (!links.length) return;
+
+  const linkByHash = new Map(links.map(a => [a.getAttribute("href"), a]));
+
+  const clearAll = () => links.forEach(l => l.classList.remove("active"));
+  const setActive = (hash) => {
+    clearAll();
+    const a = linkByHash.get(hash);
+    if (a) a.classList.add("active");
+  };
+
+  // Prefer Home when at the very top
+  const homeLink = linkByHash.get("#home") || null;
+
   const sections = links
     .map(a => $(a.getAttribute("href")))
     .filter(Boolean);
 
-  if (!sections.length) return;
-
-  const linkById = new Map(
-    links.map(a => [a.getAttribute("href"), a])
-  );
-
-  const observer = new IntersectionObserver(
-    entries => {
-      const visible = entries
-        .filter(e => e.isIntersecting)
-        .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0))[0];
-
-      if (!visible?.target?.id) return;
-
-      links.forEach(l => l.classList.remove("active"));
-      const active = linkById.get(`#${visible.target.id}`);
-      if (active) active.classList.add("active");
-    },
-    {
-      rootMargin: "-25% 0px -65% 0px",
-      threshold: [0.1, 0.25, 0.5]
+  const updateTopState = () => {
+    if (window.scrollY <= 4) {
+      if (homeLink) setActive("#home");
+      else clearAll();
     }
-  );
+  };
 
-  sections.forEach(section => observer.observe(section));
+  const buildObserver = () => {
+    const headerH = setHeaderHeightVar();
+
+    const observer = new IntersectionObserver(
+      entries => {
+        updateTopState();
+        if (window.scrollY <= 4) return;
+
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0))[0];
+
+        if (!visible?.target?.id) return;
+        setActive(`#${visible.target.id}`);
+      },
+      {
+        rootMargin: `-${headerH + 24}px 0px -60% 0px`,
+        threshold: [0.12, 0.25, 0.5]
+      }
+    );
+
+    sections.forEach(s => observer.observe(s));
+    updateTopState();
+  };
+
+  buildObserver();
+  window.addEventListener("scroll", updateTopState, { passive: true });
 }
 
 // Client-side form validation
@@ -111,9 +166,7 @@ function initForm() {
     if (errorEl) errorEl.textContent = message;
   };
 
-  const clearErrors = () => {
-    ["name", "email", "message"].forEach(f => setError(f, ""));
-  };
+  const clearErrors = () => ["name", "email", "message"].forEach(f => setError(f, ""));
 
   form.addEventListener("submit", (e) => {
     clearErrors();
@@ -124,26 +177,12 @@ function initForm() {
 
     let valid = true;
 
-    if (name.length < 2) {
-      setError("name", "Please enter your name.");
-      valid = false;
-    }
-
+    if (name.length < 2) { setError("name", "Please enter your name."); valid = false; }
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!emailValid) {
-      setError("email", "Please enter a valid email address.");
-      valid = false;
-    }
+    if (!emailValid) { setError("email", "Please enter a valid email address."); valid = false; }
+    if (message.length < 10) { setError("message", "Please enter a longer message."); valid = false; }
 
-    if (message.length < 10) {
-      setError("message", "Please enter a longer message.");
-      valid = false;
-    }
-
-    if (!valid) {
-      e.preventDefault();
-      return;
-    }
+    if (!valid) { e.preventDefault(); return; }
 
     if ((form.getAttribute("action") || "#") === "#") {
       e.preventDefault();
@@ -151,10 +190,35 @@ function initForm() {
     }
   });
 }
+function initAnchorScroll() {
+  const links = document.querySelectorAll('a[href^="#"]');
+
+  links.forEach(link => {
+    const hash = link.getAttribute("href");
+    if (!hash || hash === "#") return;
+
+    link.addEventListener("click", (e) => {
+      const target = document.querySelector(hash);
+      if (!target) return;
+
+      e.preventDefault();
+
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+      history.replaceState(null, "", hash);
+    });
+  });
+}
 
 // App bootstrap
 setYear();
+setHeaderHeightVar();
 initTheme();
 initNav();
+initAnchorScroll();
+initViewportSections();
 initActiveLinks();
 initForm();

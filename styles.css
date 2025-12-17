@@ -8,6 +8,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 h1, h2, h3 { line-height: 1.15; margin: 0 0 0.6rem; }
 p { margin: 0 0 1rem; }
 
+/* JS sets this to the real sticky header height */
+:root { --header-h: 72px; }
+
 :root {
   --bg: #0b0f16;
   --bg2: #0f1624;
@@ -62,6 +65,9 @@ body {
   border-radius: 10px;
 }
 .skip-link:focus { left: 10px; z-index: 999; }
+
+/* Make hash navigation land nicely under sticky header */
+section[id] { scroll-margin-top: var(--header-h); }
 
 /* --------- Header --------- */
 .header {
@@ -131,22 +137,19 @@ body {
   border-radius: 12px;
   background: transparent;
   color: var(--muted);
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
-
 .nav-links a:hover {
   background: var(--panel);
   color: var(--text);
 }
 
-/* Active section should look “selected”, not like a CTA button */
 .nav-links a.active {
   background: var(--panel2);
   color: var(--text);
   border: 1px solid var(--border);
 }
 
-/* Keyboard focus */
 .nav-links a:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 2px;
@@ -157,8 +160,20 @@ body {
   background: var(--btn-bg);
 }
 
+/* --------- Viewport sections behavior --------- */
+.vh-section {
+  min-height: calc(100svh - var(--header-h));
+  display: flex;
+  padding: 3.5rem 0 2rem; /* match .hero */
+}
+.vh-section:not(.tall) { align-items: center; }
+.vh-section.tall { align-items: flex-start; }
+
+/* wrapper takes full available height; content stays centered/top via parent rules */
+.vh-section > .container { width: min(var(--max), calc(100% - 2rem)); margin: 0 auto; }
+
 /* --------- Hero --------- */
-.hero { padding: 3.5rem 0 2rem; }
+.hero { padding: 0; }
 .hero-grid {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -258,8 +273,11 @@ body {
 }
 
 /* --------- Sections --------- */
-.section { padding: 3rem 0; }
-.section-alt { background: rgba(255,255,255,0.03); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.section-alt {
+  background: rgba(255,255,255,0.03);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
 [data-theme="light"] .section-alt { background: rgba(0,0,0,0.02); }
 
 .section-head { margin-bottom: 1.25rem; }
@@ -330,16 +348,6 @@ body {
   gap: 1.25rem;
   align-items: start;
 }
-.contact-meta {
-  margin-top: 1rem;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: var(--radius);
-  padding: 1rem;
-}
-.meta-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; }
-.meta-label { color: var(--muted); }
-.meta-value { color: var(--text); }
 
 .form {
   border: 1px solid var(--border);
@@ -362,11 +370,17 @@ input:focus, textarea:focus { border-color: rgba(255,255,255,0.28); }
 [data-theme="light"] input:focus, [data-theme="light"] textarea:focus { border-color: rgba(0,0,0,0.22); }
 
 .error { margin: 0.35rem 0 0; min-height: 1em; color: rgba(255,120,120,0.95); font-size: 0.9rem; }
-.form-note { margin-top: 0.75rem; }
 
 /* Footer */
 .footer { padding: 1.5rem 0; }
-.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
 
 /* --------- Responsive --------- */
 @media (max-width: 920px) {
@@ -383,7 +397,7 @@ input:focus, textarea:focus { border-color: rgba(255,255,255,0.28); }
   .nav-links {
     position: absolute;
     right: 1rem;
-    top: 64px;
+    top: calc(var(--header-h) - 8px);
     display: none;
     flex-direction: column;
     align-items: stretch;
