@@ -129,10 +129,28 @@ body {
   display: inline-block;
   padding: 10px 12px;
   border-radius: 12px;
+  background: transparent;
   color: var(--muted);
+  transition: background 0.2s ease, color 0.2s ease;
 }
-.nav-links a:hover { background: var(--panel); color: var(--text); }
-.nav-links a.active { background: var(--panel2); color: var(--text); }
+
+.nav-links a:hover {
+  background: var(--panel);
+  color: var(--text);
+}
+
+/* Active section should look “selected”, not like a CTA button */
+.nav-links a.active {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* Keyboard focus */
+.nav-links a:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
 
 .nav-cta {
   border: 1px solid var(--btn-border);
