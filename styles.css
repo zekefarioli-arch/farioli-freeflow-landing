@@ -2,7 +2,16 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.5; }
-img { max-width: 100%; height: auto; display: block; }
+img { max-width: 100%; height: auto; display: block; text-align: center;; }
+.avatar-img{
+  width: 250px;
+  height: 250px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  display: block;
+  margin: 0 auto;
+}
 a { color: inherit; text-decoration: none; }
 ul { margin: 0; padding: 0; list-style: none; }
 h1, h2, h3 { line-height: 1.15; margin: 0 0 0.6rem; }
