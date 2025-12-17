@@ -108,24 +108,29 @@ function initActiveLinks() {
 
   const clearAll = () => links.forEach(l => l.classList.remove("active"));
   const setActive = (hash) => {
-    clearAll();
-    const a = linkByHash.get(hash);
-    if (a) a.classList.add("active");
-  };
+  clearAll();
+  const a = linkByHash.get(hash);
+  if (a) a.classList.add("active");
+
+  if (brand) {
+    if (hash === "#home") brand.classList.add("home-active");
+    else brand.classList.remove("home-active");
+  }
+};
 
   // Prefer Home when at the very top
   const homeLink = linkByHash.get("#home") || null;
+  const brand = document.querySelector(".brand");
 
   const sections = links
     .map(a => $(a.getAttribute("href")))
     .filter(Boolean);
 
   const updateTopState = () => {
-    if (window.scrollY <= 4) {
-      if (homeLink) setActive("#home");
-      else clearAll();
-    }
-  };
+  if (window.scrollY <= 4) {
+    setActive("#home");
+  }
+};
 
   const buildObserver = () => {
     const headerH = setHeaderHeightVar();
