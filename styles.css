@@ -166,6 +166,10 @@ section[id] { scroll-margin-top: var(--header-h); }
   display: flex;
   padding: 3.5rem 0 2rem; /* match .hero */
 }
+.vh-section.vh-footer {
+  min-height: calc(100svh - var(--header-h) - 88px);
+}
+
 .vh-section:not(.tall) { align-items: center; }
 .vh-section.tall { align-items: flex-start; }
 
