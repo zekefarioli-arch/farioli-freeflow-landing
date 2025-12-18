@@ -6,6 +6,7 @@
   <title>Farioli FreeFlow Ltd — Software Consultancy</title>
   <meta name="description" content="Software consultancy delivering clean, scalable and reliable solutions." />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
 <body>
@@ -24,10 +25,10 @@
         </button>
 
         <ul id="nav-menu" class="nav-links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#reviews">Reviews</a></li>
-          <li><a href="#contact" class="nav-cta">Contact</a></li>
+          <li><a href="#about"><i class="fa-regular fa-user"></i> About</a></li>
+          <li><a href="#services"><i class="fa-solid fa-gear"></i> Services</a></li>
+          <li><a href="#reviews"><i class="fa-regular fa-star"></i> Reviews</a></li>
+          <li><a href="#contact" class="nav-cta"><i class="fa-regular fa-envelope"></i> Contact</a></li>
         </ul>
       </nav>
     </div>
@@ -125,7 +126,7 @@
 
         <div class="cards">
           <article class="card">
-            <h3>Web & API Development</h3>
+            <h3><i class="fa-solid fa-code"></i> Web & API Development</h3>
             <p class="muted">Robust services with clean interfaces.</p>
             <ul class="list">
               <li>REST APIs</li>
@@ -135,7 +136,7 @@
           </article>
 
           <article class="card">
-            <h3>Frontend Delivery</h3>
+            <h3><i class="fa-solid fa-desktop"></i> Frontend Delivery</h3>
             <p class="muted">Usable, accessible and responsive interfaces.</p>
             <ul class="list">
               <li>Semantic HTML</li>
@@ -145,7 +146,7 @@
           </article>
 
           <article class="card">
-            <h3>Quality Engineering</h3>
+            <h3><i class="fa-solid fa-shield-halved"></i> Quality Engineering</h3>
             <p class="muted">Confidence through testing and automation.</p>
             <ul class="list">
               <li>Test strategy</li>
@@ -155,7 +156,7 @@
           </article>
 
           <article class="card">
-            <h3>Modernisation</h3>
+            <h3><i class="fa-solid fa-wrench"></i> Modernisation</h3>
             <p class="muted">Incremental refactors without breaking delivery.</p>
             <ul class="list">
               <li>Legacy refactoring</li>
@@ -207,24 +208,25 @@
 
         <form class="form" id="contact-form" action="#" method="POST" novalidate>
           <div class="field">
-            <label for="name">Name</label>
+            <label><i class="fa-regular fa-user"></i> Name</label>
             <input id="name" name="name" type="text" required />
             <p class="error" data-error-for="name"></p>
           </div>
 
           <div class="field">
-            <label for="email">Email</label>
+            <label><i class="fa-regular fa-envelope"></i> Email</label>
             <input id="email" name="email" type="email" required />
             <p class="error" data-error-for="email"></p>
           </div>
 
           <div class="field">
-            <label for="message">Message</label>
+            <label><i class="fa-regular fa-comment"></i> Message</label>
             <textarea id="message" name="message" rows="5" required></textarea>
             <p class="error" data-error-for="message"></p>
           </div>
-
-          <button class="btn primary" type="submit">Send message</button>
+          <button class="btn primary" type="submit">
+            <i class="fa-regular fa-paper-plane"></i>Send message
+        </button>
         </form>
       </div>
     </section>

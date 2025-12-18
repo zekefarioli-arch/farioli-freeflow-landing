@@ -241,6 +241,14 @@ section[id] { scroll-margin-top: var(--header-h); }
 .btn.ghost { background: transparent; }
 .btn.tiny { padding: 8px 10px; border-radius: 12px; }
 
+.btn i {
+  margin-right: 0.5rem;
+  transform: translateY(-1px);
+}
+.btn:hover i {
+  transform: translateY(-2px) translateX(2px);
+}
+
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
