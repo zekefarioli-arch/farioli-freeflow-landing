@@ -70,6 +70,20 @@ function initNav() {
   });
 }
 
+function initServicesAccordion() {
+  const items = document.querySelectorAll('#services-accordion details');
+  if (!items.length) return;
+
+  items.forEach(d => {
+    d.addEventListener('toggle', () => {
+      if (d.open) {
+        items.forEach(other => {
+          if (other !== d) other.removeAttribute('open');
+        });
+      }
+    });
+  });
+}
 
 // Decide if a section should be vertically centered or top-aligned
 function initViewportSections() {
@@ -227,3 +241,4 @@ initAnchorScroll();
 initViewportSections();
 initActiveLinks();
 initForm();
+initServicesAccordion();

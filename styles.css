@@ -350,13 +350,6 @@ section[id] { scroll-margin-top: var(--header-h); }
 }
 .list { margin-top: 0.75rem; padding-left: 1.1rem; list-style: disc; color: var(--muted); }
 .list li { margin: 0.25rem 0; }
-
-/* Reviews */
-.reviews {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
-}
 .review {
   border: 1px solid var(--border);
   background: var(--panel);
@@ -459,6 +452,7 @@ input:focus, textarea:focus { border-color: rgba(255,255,255,0.28); }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .reviews { grid-template-columns: 1fr; }
   .info-cards { grid-template-columns: 1fr; }
+  .services-accordion{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 720px) {
@@ -481,4 +475,61 @@ input:focus, textarea:focus { border-color: rgba(255,255,255,0.28); }
   .nav-links.open { display: flex; }
   .nav-links a { padding: 12px; }
   .hero-stats { grid-template-columns: 1fr; }
+  .services-accordion{ grid-template-columns: 1fr; }
 }
+
+
+/* --- Services accordion but keep "cards" layout --- */
+.services-accordion{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: start;
+  /* align-items: stretch; */
+}
+
+@media (max-width: 920px){
+  .services-accordion{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px){
+  .services-accordion{ grid-template-columns: 1fr; }
+}
+
+/* Each <details> looks like your .card */
+.svc{
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 1rem;
+  align-self: start;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+/* remove default marker */
+.svc summary{ list-style: none; cursor: pointer; }
+.svc summary::-webkit-details-marker{ display:none; }
+
+.svc-summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: .75rem;
+}
+
+.svc-title{
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  font-weight:700;
+}
+
+.svc-body{
+  margin-top: .5rem;
+}
+/* nicer chevron */
+.svc-chevron{ opacity:.7; }
+.svc[open] .svc-chevron{ transform: rotate(180deg); }
+
