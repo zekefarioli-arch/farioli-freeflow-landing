@@ -363,6 +363,9 @@ section[id] { scroll-margin-top: var(--header-h); }
   border-radius: var(--radius);
   padding: 1rem;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 .review blockquote { margin: 0.75rem 0; color: var(--text); }
 .avatar {
@@ -376,6 +379,36 @@ section[id] { scroll-margin-top: var(--header-h); }
   font-weight: 700;
   color: var(--muted);
 }
+.review-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.review figcaption {
+  margin-top: auto;
+}
+
+.review-linkedin {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 2rem;
+  color: #0a66c2;
+
+  opacity: 0.9;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.review-linkedin:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
 
 /* Contact */
 .contact-grid {
