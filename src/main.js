@@ -8,7 +8,7 @@ function setYear() {
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 }
 
-// Theme handling
+// Theme handling (data-theme + localStorage)
 const THEME_KEY = "ff_theme";
 
 function getInitialTheme() {
@@ -26,14 +26,19 @@ function applyTheme(theme) {
 }
 
 function initTheme() {
-  applyTheme(getInitialTheme());
-
-  const toggleBtn = $("#theme-toggle");
-  if (!toggleBtn) return;
-
-  toggleBtn.addEventListener("click", () => {
-    const current = document.documentElement.getAttribute("data-theme") || "dark";
-    applyTheme(current === "dark" ? "light" : "dark");
+  const checkbox = document.getElementById("ff-theme-switch");
+  const initial = getInitialTheme();
+  document.documentElement.setAttribute("data-theme", initial);
+  localStorage.setItem(THEME_KEY, initial);
+  if (!checkbox) {
+    console.warn("ff-theme-switch NOT found");
+    return;
+  }
+  checkbox.checked = initial === "dark";
+  checkbox.addEventListener("change", () => {
+    const next = checkbox.checked ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem(THEME_KEY, next);
   });
 }
 
@@ -119,32 +124,29 @@ function initActiveLinks() {
   if (!links.length) return;
 
   const linkByHash = new Map(links.map(a => [a.getAttribute("href"), a]));
+  const brand = document.querySelector(".brand");
 
   const clearAll = () => links.forEach(l => l.classList.remove("active"));
   const setActive = (hash) => {
-  clearAll();
-  const a = linkByHash.get(hash);
-  if (a) a.classList.add("active");
+    clearAll();
+    const a = linkByHash.get(hash);
+    if (a) a.classList.add("active");
 
-  if (brand) {
-    if (hash === "#home") brand.classList.add("home-active");
-    else brand.classList.remove("home-active");
-  }
-};
-
-  // Prefer Home when at the very top
-  const homeLink = linkByHash.get("#home") || null;
-  const brand = document.querySelector(".brand");
+    if (brand) {
+      if (hash === "#home") brand.classList.add("home-active");
+      else brand.classList.remove("home-active");
+    }
+  };
 
   const sections = links
     .map(a => $(a.getAttribute("href")))
     .filter(Boolean);
 
   const updateTopState = () => {
-  if (window.scrollY <= 4) {
+     if (window.scrollY <= 4) {
     setActive("#home");
   }
-};
+  };
 
   const buildObserver = () => {
     const headerH = setHeaderHeightVar();
